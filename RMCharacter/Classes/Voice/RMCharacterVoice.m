@@ -151,7 +151,7 @@ NSString *soundName;
 // Special case for farting
 if (_expression == RMCharacterExpressionFart) {
     int randomSound = arc4random_uniform(kNumFarts);
-    soundName = [NSString stringWithFormat:@"%d-%02d",_expression, randomSound];
+    soundName = [NSString stringWithFormat:@"%d-%d",_expression, randomSound];
 } else {
     soundName = [NSString stringWithFormat:@"%d",_expression];
 }
