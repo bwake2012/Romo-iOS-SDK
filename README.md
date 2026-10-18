@@ -23,6 +23,8 @@ Control Romo's hardware using your own apps! Using **RMCore**, you can drive all
 #### RMVision
 **RMVision** allows you to use the iPhone's camera to allow Romo to see but also understand the world using computer vision.
 
+RMVision lives in its own repository, [Romo-iOS-SDK-Vision](https://github.com/bwake2012/Romo-iOS-SDK-Vision), so that apps that don't need it don't have to download OpenCV.
+
 ## Setting up a project
 You have multiple options:
 ### Using CocoaPods
@@ -45,8 +47,9 @@ on top of your Podfile.
 
 If you additionally need `RMVision` add
 ```ruby
-pod 'Romo/RMVision'
+pod 'RomoVision'
 ```
+This replaces the former `pod 'Romo/RMVision'`.
 
 A complete `PodFile` with all frameworks would look like this:
 
@@ -62,7 +65,7 @@ target 'My Cool Romo App' do
   # Pods for My Cool Romo App
   pod 'Romo'
   pod 'Romo/RMCharacter'
-  pod 'Romo/RMVision'
+  pod 'RomoVision'
   
 end
 ```
@@ -76,7 +79,7 @@ In Xcode, choose *File > Add Package Dependencies…*, enter `https://github.com
 
 With Swift Package Manager, Swift code imports each library by name (`import RMCore`, `import RMCharacter`) instead of `import Romo`. ObjC code can keep using `#import <Romo/RMCore.h>`.
 
-Note that `RMVision` and `RMWebSocketLogger` are currently only available through CocoaPods.
+For `RMVision`, add the [Romo-iOS-SDK-Vision](https://github.com/bwake2012/Romo-iOS-SDK-Vision) package. `RMWebSocketLogger` is currently only available through CocoaPods.
 
 ### Carthage
 Although not tested yet, the basic folder structure for Carthage is in place so it should theoretically already be working.

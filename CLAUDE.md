@@ -4,16 +4,17 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Overview
 
-Romo iOS SDK: an Objective-C (plus some Objective-C++/C++) library for controlling Romotive's discontinued Romo robot from an iPhone. Romotive open-sourced it, and Navideck maintains this continuation. It ships as a CocoaPod, `Romo` (`Romo.podspec`), with four subspecs, and as a Swift package (`Package.swift`) with RMShared, RMCore and RMCharacter only. Each subspec is a top-level directory:
+Romo iOS SDK: an Objective-C (plus some Objective-C++/C++) library for controlling Romotive's discontinued Romo robot from an iPhone. Romotive open-sourced it, and Navideck maintains this continuation. It ships as a CocoaPod, `Romo` (`Romo.podspec`), with three subspecs, and as a Swift package (`Package.swift`) with the same three libraries. Each subspec is a top-level directory:
 
 | Subspec | Purpose | Depends on |
 |---|---|---|
 | `RMShared` | Math (quaternions, circle math), ring buffer, dispatch timer, logging, web socket | CocoaLumberjack, SocketRocket |
 | `RMCore` (default subspec) | Hardware control: motors, head tilt, LEDs, IMU, stasis/bump sensing, firmware update | RMShared |
 | `RMCharacter` | Romo's animated face, emotions/expressions, voice | RMShared, assets |
-| `RMVision` | Camera-based computer vision | RMShared, GPUImage, OpenCV ~> 2.0 |
 
 Each subspec directory contains `Classes/` (the source globbed by the podspec), optional `Assets/`, and `Examples/` (sample apps).
+
+RMVision (computer vision on OpenCV and GPUImage) used to be a fourth subspec. It now lives in its own repo, `bwake2012/Romo-iOS-SDK-Vision` (pod `RomoVision`), which depends on this one for RMShared. Keeping it separate means SwiftPM users of RMCore/RMCharacter don't download OpenCV: SwiftPM fetches every binary dependency a package declares, whichever products an app uses. Changes to RMShared's public headers can break RMVision.
 
 ### CocoaPods and SwiftPM share the same sources
 Every change to RMShared, RMCore or RMCharacter has to keep building under both:
@@ -34,15 +35,7 @@ pod install
 open HelloRMCore.xcworkspace      # always the .xcworkspace, not the .xcodeproj
 ```
 
-Example apps: `RMCore/Examples/{HelloRMCore, HelloRMCoreSwift, HelloRomo, RMCoreTest}`, `RMCharacter/Examples/{HelloRMCharacter, HelloRomo}`, `RMVision/Examples/{HelloRMVision, RMVisionSample}`, `RMShared/Examples/HelloRMShared`.
-
-The only XCTest targets are in RMVision: `RMVisionSample` (targets `RMVisionSampleTests` and `RMVisionBenchmarks`) and `HelloRMVision/HelloRMVisionTests`. To run them from the command line:
-
-```sh
-xcodebuild test -workspace RMVision/Examples/RMVisionSample/RMVisionSample.xcworkspace \
-  -scheme RMVisionSampleTests -destination 'platform=iOS Simulator,name=<device>'
-# single test: add -only-testing:RMVisionSampleTests/RMVisionTests/<testMethod>
-```
+Example apps: `RMCore/Examples/{HelloRMCore, HelloRMCoreSwift, HelloRomo, RMCoreTest}`, `RMCharacter/Examples/{HelloRMCharacter, HelloRomo}`, `RMShared/Examples/HelloRMShared`. None of them has test targets.
 
 To build the Swift package (there is no macOS support, so `swift build` doesn't work; use xcodebuild from the repo root):
 
@@ -52,7 +45,7 @@ xcodebuild build -scheme Romo-Package -destination 'generic/platform=iOS Simulat
 
 The package has no test targets. To exercise it at runtime, depend on it from a scratch package by local path and run that package's tests on a simulator. Xcode 27's test runner needs an iOS 17+ simulator.
 
-To validate the podspec, run `pod lib lint Romo.podspec`. The podspec excludes `arm64` for simulator builds, so simulator runs use x86_64/Rosetta. Real robot I/O only works on a physical device docked in a Romo. For hardware-free testing, use `+[RMCore connectToSimulatedRobot]`.
+To validate the podspec, run `pod lib lint Romo.podspec`. Real robot I/O only works on a physical device docked in a Romo. For hardware-free testing, use `+[RMCore connectToSimulatedRobot]`.
 
 ## Releases
 
@@ -74,12 +67,6 @@ To validate the podspec, run `pod lib lint Romo.podspec`. The podspec excludes `
 - `RMCoreRobotRomo3` is the only concrete robot. Client code casts to `RMCoreRobot<HeadTiltProtocol, DriveProtocol, LEDProtocol>` after checking `isDrivable` / `isHeadTiltable` / `isLEDEquipped`.
 - Actuation (`RMCoreMotor`, `RMCoreDifferentialDrive`, `RMCoreDriveController`, `RMCoreHeadTilt`) is built on the PID and DSP utilities in `Utilities/`. Sensing (`Inertial/`, `Stasis/`, `Bump/`) fuses device and platform IMU data.
 - `*_Internal.h` headers expose private API between RMCore classes. Don't make them public.
-
-### RMVision module system
-- `RMVision` (`.mm`) runs the camera capture pipeline and sends each frame, as a `cv::Mat`, to every active module that conforms to `RMVisionModuleProtocol` (`activateModule:` / `activateModuleWithName:`).
-- Modules live in `Classes/Modules/<Feature>/` (face, motion, color, line, object tracking, stasis, brightness, picture, video, and others). Several are GPUImage filter chains, with custom filters in `Classes/Filters/`.
-- `RMFakeVision` is a stand-in for running without a camera.
-- Files that touch OpenCV must be `.mm`. `RMVisionModuleProtocol.h` guards C++ with `#ifdef __cplusplus`, so it can still be included from plain `.m` files.
 
 ### RMCharacter
 - `RMCharacter` (`+[RMCharacter Romo]`) is a facade over `RMCharacterFace` (eye, pupil, and animation views, driven by expressions and emotions), `RMCharacterVoice` (plays `.caf` sounds), and `RMCharacterPNS`. PNS is a "peripheral nervous system" timer that fires idle blink, look, and breathe signals.

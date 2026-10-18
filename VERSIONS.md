@@ -2,6 +2,11 @@
 ---
 ## Version History
 
+### Unreleased
+#### Changed in this version
+- **RMVision**: Moved to its own repository, [Romo-iOS-SDK-Vision](https://github.com/bwake2012/Romo-iOS-SDK-Vision). The `Romo/RMVision` subspec is replaced by the `RomoVision` pod, which also supports Swift Package Manager and uses OpenCV 4
+- **POD**: Simulator builds no longer exclude arm64, which only OpenCV 2.4 needed
+
 ### 0.6.0 (RC)
 #### New in this version
 - **SwiftPM**: Added Swift Package Manager support for `RMShared`, `RMCore` and `RMCharacter`. `RMVision` and `RMWebSocketLogger` remain CocoaPods-only
