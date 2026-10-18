@@ -82,8 +82,8 @@ To validate the podspec, run `pod lib lint Romo.podspec`. The podspec excludes `
 - Files that touch OpenCV must be `.mm`. `RMVisionModuleProtocol.h` guards C++ with `#ifdef __cplusplus`, so it can still be included from plain `.m` files.
 
 ### RMCharacter
-- `RMCharacter` (`+[RMCharacter Romo]`) is a facade over `RMCharacterFace` (eye, pupil, and animation views, driven by expressions and emotions), `RMCharacterVoice` (plays `.caf` sounds), and `RMCharacterPNS`. PNS is a "peripheral nervous system" timer that fires idle blink, look, and breathe signals.
-- Assets in `RMCharacter/Assets/Media.xcassets` are images (looked up by imageset name), sprite-crop JSON and `.caf` sounds (both datasets). The podspec uses `resources` instead of a `resource_bundle`, and the README warns that CocoaPods consumers must not use `use_frameworks!`. See above for how SwiftPM loads them.
+- `RMCharacter` (`+[RMCharacter Romo]`) is a facade over `RMCharacterFace` (eye, pupil, and animation views, driven by expressions and emotions), `RMCharacterVoice` (plays `.caf` sounds and `.aiff` mumbles), and `RMCharacterPNS`. PNS is a "peripheral nervous system" timer that fires idle blink, look, and breathe signals.
+- Assets in `RMCharacter/Assets/Media.xcassets` are images (looked up by imageset name), sprite-crop JSON and sounds (`.caf`, plus `.aiff` for the mumbles; both datasets). The podspec uses `resources` instead of a `resource_bundle`, and the README warns that CocoaPods consumers must not use `use_frameworks!`. See above for how SwiftPM loads them.
 
 ## Constraints
 

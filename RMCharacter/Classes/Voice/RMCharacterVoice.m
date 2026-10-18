@@ -121,9 +121,11 @@
 #ifdef SWIFTPM_MODULE_BUNDLE
     // SwiftPM compiles the sounds into the asset catalog of RMCharacter's resource bundle
     NSData *data = [[NSDataAsset alloc] initWithName:name bundle:SWIFTPM_MODULE_BUNDLE].data;
-    return data ? [[AVAudioPlayer alloc] initWithData:data fileTypeHint:AVFileTypeCoreAudioFormat error:nil] : nil;
+    return data ? [[AVAudioPlayer alloc] initWithData:data error:nil] : nil;
 #else
-    NSString *path = [[NSBundle bundleForClass:self.classForCoder] pathForResource:name ofType:@"caf"];
+    // Most sounds are CAF, but the mumbles are AIFF
+    NSBundle *bundle = [NSBundle bundleForClass:self.classForCoder];
+    NSString *path = [bundle pathForResource:name ofType:@"caf"] ?: [bundle pathForResource:name ofType:@"aiff"];
     path = [path stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLHostAllowedCharacterSet]];
     return [[AVAudioPlayer alloc] initWithContentsOfURL:[NSURL URLWithString:path] error:nil];
 #endif
