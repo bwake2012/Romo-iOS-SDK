@@ -71,7 +71,7 @@ end
 In Xcode, choose *File > Add Package Dependencies…*, enter `https://github.com/Navideck/Romo-iOS-SDK` and add the `RMCore` and/or `RMCharacter` libraries to your target. In a `Package.swift`:
 
 ```swift
-.package(url: "https://github.com/Navideck/Romo-iOS-SDK", branch: "master")
+.package(url: "https://github.com/Navideck/Romo-iOS-SDK", from: "0.6.0")
 ```
 
 With Swift Package Manager, Swift code imports each library by name (`import RMCore`, `import RMCharacter`) instead of `import Romo`. ObjC code can keep using `#import <Romo/RMCore.h>`.
