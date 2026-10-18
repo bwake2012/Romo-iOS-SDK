@@ -70,5 +70,5 @@ To validate the podspec, run `pod lib lint Romo.podspec`. The podspec excludes `
 
 ## Constraints
 
-- Deployment target is iOS 6.0 in the podspec (examples use 7.0), with ARC. Avoid APIs that are newer than the supported range unless they are availability-guarded. The README advertises iOS 6–17 support.
+- Minimum iOS version is 15.5 (podspec, example Podfiles, and example Xcode projects), with ARC. The README advertises iOS 15.5–17 support.
 - Apps using RMCore need `com.romotive.romo` under `Supported external accessory protocols` in their Info.plist. Background mode also needs "App communicates with an accessory".
