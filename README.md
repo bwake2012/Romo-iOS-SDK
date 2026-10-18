@@ -67,6 +67,17 @@ target 'My Cool Romo App' do
 end
 ```
 
+### Swift Package Manager
+In Xcode, choose *File > Add Package Dependencies…*, enter `https://github.com/Navideck/Romo-iOS-SDK` and add the `RMCore` and/or `RMCharacter` libraries to your target. In a `Package.swift`:
+
+```swift
+.package(url: "https://github.com/Navideck/Romo-iOS-SDK", branch: "master")
+```
+
+With Swift Package Manager, Swift code imports each library by name (`import RMCore`, `import RMCharacter`) instead of `import Romo`. ObjC code can keep using `#import <Romo/RMCore.h>`.
+
+Note that `RMVision` and `RMWebSocketLogger` are currently only available through CocoaPods.
+
 ### Carthage
 Although not tested yet, the basic folder structure for Carthage is in place so it should theoretically already be working.
 
@@ -181,7 +192,9 @@ In your app's <code>Info.plist</code> add a new key with the text `Required back
 import Romo
 ```
 
-In case you don't use CocoaPods you need to import the  RMCore framework manually using a bridging header file `MyCoolRomoApp-Bridging-Header.h` with:
+If you're using Swift Package Manager, use `import RMCore` instead.
+
+In case you don't use CocoaPods or Swift Package Manager you need to import the  RMCore framework manually using a bridging header file `MyCoolRomoApp-Bridging-Header.h` with:
 ```Objc
 #import <Romo/RMCore.h>
 ```
